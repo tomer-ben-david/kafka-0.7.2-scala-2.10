@@ -1,0 +1,222 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>kafka</groupId>
+    <artifactId>kafka_2.8.0</artifactId>
+    <packaging>pom</packaging>
+    <version>0.7.2</version>
+
+    <properties>
+        <scala.major.version>2.10</scala.major.version>
+        <scala.version>${scala.major.version}.3</scala.version>
+        <akka.version>2.3.2</akka.version>
+    </properties>
+
+    <build>
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
+        <finalName>pt-scoring-server-web</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <warName>scoringserver</warName>
+                    <packagingIncludes>
+                    </packagingIncludes>
+                    <webResources>
+                        <webResource>
+                            <!-- this is relative to the pom.xml directory -->
+                            <directory>target</directory>
+                            <targetPath>WEB-INF</targetPath>
+                            <!-- the list has a default value of ** -->
+                            <includes>
+                                <include>version.info</include>
+                            </includes>
+                        </webResource>
+                    </webResources>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <executions>
+                    <execution>
+                        <id>scala-compile-first</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>scala-test-compile</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <useFile>true</useFile>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <systemProperties>
+                        <property>
+                            <name>scoringServerTestDir</name>
+                            <value>${project.build.testOutputDirectory}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>gmaven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <configuration>
+                    <scalaVersion>${scala.version}</scalaVersion>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.xerial.snappy</groupId>
+            <artifactId>snappy-java</artifactId>
+            <version>1.0.4.1</version>
+        </dependency>
+
+        <dependency>
+
+            <groupId>org.apache.zookeeper</groupId>
+
+            <artifactId>zookeeper</artifactId>
+
+            <version>3.3.4</version>
+
+            <exclusions>
+
+                <exclusion>
+
+                    <artifactId>jmxtools</artifactId>
+
+                    <groupId>com.sun.jdmk</groupId>
+
+                </exclusion>
+
+                <exclusion>
+
+                    <artifactId>jms</artifactId>
+
+                    <groupId>javax.jms</groupId>
+
+                </exclusion>
+
+                <exclusion>
+
+                    <artifactId>jmxri</artifactId>
+
+                    <groupId>com.sun.jmx</groupId>
+
+                </exclusion>
+
+                <exclusion>
+
+                    <artifactId>mail</artifactId>
+
+                    <groupId>javax.mail</groupId>
+
+                </exclusion>
+
+                <exclusion>
+
+                    <artifactId>jline</artifactId>
+
+                    <groupId>jline</groupId>
+
+                </exclusion>
+
+            </exclusions>
+
+        </dependency>
+
+        <dependency>
+
+            <groupId>com.github.sgroschupf</groupId>
+
+            <artifactId>zkclient</artifactId>
+
+            <version>0.1</version>
+
+            <exclusions>
+
+                <exclusion>
+
+                    <artifactId>javax</artifactId>
+
+                    <groupId>javax</groupId>
+
+                </exclusion>
+
+                <exclusion>
+
+                    <artifactId>jms</artifactId>
+
+                    <groupId>javax.jms</groupId>
+
+                </exclusion>
+
+            </exclusions>
+
+        </dependency>
+
+        <dependency>
+
+            <groupId>org.scala-lang</groupId>
+
+            <artifactId>scala-library</artifactId>
+
+            <version>${scala.version}</version>
+
+        </dependency>
+
+        <dependency>
+
+            <groupId>net.sf.jopt-simple</groupId>
+
+            <artifactId>jopt-simple</artifactId>
+
+            <version>3.2</version>
+
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe.akka</groupId>
+            <artifactId>akka-actor_${scala.major.version}</artifactId>
+            <version>${akka.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>ScalaToolsMaven2Repository</id>
+            <name>Scala-Tools Maven2 Repository</name>
+            <url>http://scala-tools.org/repo-releases/</url>
+        </repository>
+    </repositories>
+</project>
