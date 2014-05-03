@@ -125,7 +125,9 @@ class SyncProducerTest extends JUnitSuite {
     var failed = false
     /** After compression, the compressed message has size 118 **/
     try {
-      producer.send("test", 0, new ByteBufferMessageSet(compressionCodec = DefaultCompressionCodec, messages = messages: _*))
+      val amessages = messages
+//      producer.send("test", 0, new ByteBufferMessageSet(compressionCodec = DefaultCompressionCodec, messages = messages: _*))
+       producer.send("test", 0, new ByteBufferMessageSet(compressionCodec = DefaultCompressionCodec, amessages: _*))
     }catch {
       case e: MessageSizeTooLargeException => failed = true
     }

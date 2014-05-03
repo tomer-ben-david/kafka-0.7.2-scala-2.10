@@ -41,7 +41,7 @@ class ByteBufferMessageSet(private val buffer: ByteBuffer,
     throw new InvalidMessageSizeException("Message set cannot be larger than " + Int.MaxValue)
 
   def this(compressionCodec: CompressionCodec, messages: Message*) {
-    this(MessageSet.createByteBuffer(compressionCodec, messages:_*), 0L, ErrorMapping.NoError)
+    this(MessageSet.createByteBuffer(compressionCodec, messages), 0L, ErrorMapping.NoError)
   }
 
   def this(messages: Message*) {

@@ -25,6 +25,7 @@ import java.util.concurrent.CountDownLatch
 import kafka.server.{KafkaConfig, KafkaZooKeeper}
 import kafka.common.{InvalidTopicException, InvalidPartitionException}
 import kafka.api.OffsetRequest
+import scala.collection.JavaConverters._
 
 /**
  * The guy who creates and hands out logs
@@ -352,6 +353,6 @@ private[kafka] class LogManager(val config: KafkaConfig,
   }
 
 
-  def getAllTopics(): Iterator[String] = logs.keys.iterator
+  def getAllTopics(): Iterator[String] = logs.keys.iterator.asScala
   def getTopicPartitionsMap() = topicPartitionsMap
 }

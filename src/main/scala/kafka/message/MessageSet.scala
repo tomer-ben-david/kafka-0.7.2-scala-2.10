@@ -52,7 +52,7 @@ object MessageSet {
    */
   def entrySize(message: Message): Int = LogOverhead + message.size
 
-  def createByteBuffer(compressionCodec: CompressionCodec, messages: Message*): ByteBuffer =
+  def createByteBuffer(compressionCodec: CompressionCodec, messages: Seq[Message]): ByteBuffer =
     compressionCodec match {
       case NoCompressionCodec =>
         val buffer = ByteBuffer.allocate(MessageSet.messageSetSize(messages))

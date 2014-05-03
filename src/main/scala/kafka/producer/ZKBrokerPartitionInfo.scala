@@ -223,7 +223,7 @@ private[producer] class ZKBrokerPartitionInfo(config: ZKConfig, producerCbk: (In
 
         parentPath match {
           case "/brokers/topics" =>        // this is a watcher for /broker/topics path
-            val updatedTopics = asBuffer(curChilds)
+            val updatedTopics = asScalaBuffer(curChilds)
             debug("[BrokerTopicsListener] List of topics changed at " + parentPath + " Updated topics -> " +
                 curChilds.toString)
             debug("[BrokerTopicsListener] Old list of topics: " + oldBrokerTopicPartitionsMap.keySet.toString)
@@ -247,7 +247,7 @@ private[producer] class ZKBrokerPartitionInfo(config: ZKConfig, producerCbk: (In
             if(pathSplits.length == 4 && pathSplits(2).equals("topics")) {
               debug("[BrokerTopicsListener] List of brokers changed at " + parentPath + "\t Currently registered " +
                   " list of brokers -> " + curChilds.toString + " for topic -> " + topic)
-              processNewBrokerInExistingTopic(topic, asBuffer(curChilds))
+              processNewBrokerInExistingTopic(topic, asScalaBuffer(curChilds))
             }
         }
 
@@ -260,7 +260,7 @@ private[producer] class ZKBrokerPartitionInfo(config: ZKConfig, producerCbk: (In
     def processBrokerChange(parentPath: String, curChilds: Seq[String]) {
       if(parentPath.equals(ZkUtils.BrokerIdsPath)) {
         import scala.collection.JavaConversions._
-        val updatedBrokerList = asBuffer(curChilds).map(bid => bid.toInt)
+        val updatedBrokerList = asScalaBuffer(curChilds).map(bid => bid.toInt)
         val newBrokers = updatedBrokerList.toSet &~ oldBrokerIdMap.keySet
         debug("[BrokerTopicsListener] List of newly registered brokers: " + newBrokers.toString)
         newBrokers.foreach { bid =>
@@ -293,7 +293,7 @@ private[producer] class ZKBrokerPartitionInfo(config: ZKConfig, producerCbk: (In
     /**
      * Generate the updated mapping of (brokerId, numPartitions) for the new list of brokers
      * registered under some topic
-     * @param parentPath the path of the topic under which the brokers have changed
+     * @param topic the path of the topic under which the brokers have changed
      * @param curChilds the list of changed brokers
      */
     def processNewBrokerInExistingTopic(topic: String, curChilds: Seq[String]) = {

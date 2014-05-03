@@ -19,6 +19,8 @@ package kafka.javaapi.message
 import java.nio.ByteBuffer
 import kafka.common.ErrorMapping
 import kafka.message._
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class ByteBufferMessageSet(private val buffer: ByteBuffer,
                            private val initialOffset: Long = 0L,
@@ -29,7 +31,7 @@ class ByteBufferMessageSet(private val buffer: ByteBuffer,
   def this(buffer: ByteBuffer) = this(buffer, 0L, ErrorMapping.NoError)
 
   def this(compressionCodec: CompressionCodec, messages: java.util.List[Message]) {
-    this(MessageSet.createByteBuffer(compressionCodec, messages: _*),
+    this(MessageSet.createByteBuffer(compressionCodec, messages),
          0L, ErrorMapping.NoError)
   }
 

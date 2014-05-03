@@ -77,7 +77,7 @@ object JmxTool {
         options.valuesOf(objectNameOpt).map(new ObjectName(_))
       else
         List(null)
-    val names = queries.map((name: ObjectName) => asSet(mbsc.queryNames(name, null))).flatten
+    val names = queries.map((name: ObjectName) => asScalaSet(mbsc.queryNames(name, null))).flatten
     val attributes: Iterable[(ObjectName, Array[String])] = 
       names.map((name: ObjectName) => (name, mbsc.getMBeanInfo(name).getAttributes().map(_.getName)))
 

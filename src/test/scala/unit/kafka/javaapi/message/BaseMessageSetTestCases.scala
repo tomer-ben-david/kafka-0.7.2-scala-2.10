@@ -29,7 +29,7 @@ trait BaseMessageSetTestCases extends JUnitSuite {
   def createMessageSet(messages: Seq[Message], compressed: CompressionCodec = NoCompressionCodec): MessageSet
   def toMessageIterator(messageSet: MessageSet): Iterator[Message] = {
     import scala.collection.JavaConversions._
-    val messages = asIterable(messageSet)
+    val messages = asScalaIterable(messageSet)
     messages.map(m => m.message).iterator
   }
 
@@ -44,7 +44,7 @@ trait BaseMessageSetTestCases extends JUnitSuite {
     import scala.collection.JavaConversions._
     val m = createMessageSet(messages)
     // two iterators over the same set should give the same results
-    TestUtils.checkEquals(asIterator(m.iterator), asIterator(m.iterator))
+    TestUtils.checkEquals(asScalaIterator(m.iterator), asScalaIterator(m.iterator))
   }
 
   @Test
@@ -52,7 +52,7 @@ trait BaseMessageSetTestCases extends JUnitSuite {
     import scala.collection.JavaConversions._
     val m = createMessageSet(messages, DefaultCompressionCodec)
     // two iterators over the same set should give the same results
-    TestUtils.checkEquals(asIterator(m.iterator), asIterator(m.iterator))
+    TestUtils.checkEquals(asScalaIterator(m.iterator), asScalaIterator(m.iterator))
   }
 
   @Test

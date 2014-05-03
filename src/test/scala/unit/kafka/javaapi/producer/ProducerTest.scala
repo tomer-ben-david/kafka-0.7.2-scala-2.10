@@ -404,9 +404,9 @@ class ProducerTest extends JUnitSuite {
     val producer = new Producer[String, String](config)
     try {
       import scala.collection.JavaConversions._
-      producer.send(new ProducerData[String, String]("new-topic", "test", asList(Array("test1"))))
+      producer.send(new ProducerData[String, String]("new-topic", "test", asJavaList(Array("test1"))))
       Thread.sleep(100)
-      producer.send(new ProducerData[String, String]("new-topic", "test", asList(Array("test1"))))
+      producer.send(new ProducerData[String, String]("new-topic", "test", asJavaList(Array("test1"))))
       Thread.sleep(100)
       // cross check if brokers got the messages
       val messageSet1 = consumer1.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
@@ -434,12 +434,12 @@ class ProducerTest extends JUnitSuite {
     val producer = new Producer[String, String](config)
     try {
       import scala.collection.JavaConversions._
-      producer.send(new ProducerData[String, String]("new-topic", "test", asList(Array("test1"))))
+      producer.send(new ProducerData[String, String]("new-topic", "test", asJavaList(Array("test1"))))
       Thread.sleep(100)
       // kill 2nd broker
       server2.shutdown
       Thread.sleep(100)
-      producer.send(new ProducerData[String, String]("new-topic", "test", asList(Array("test1"))))
+      producer.send(new ProducerData[String, String]("new-topic", "test", asJavaList(Array("test1"))))
       Thread.sleep(100)
       // cross check if brokers got the messages
       val messageSet1 = consumer1.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
@@ -470,10 +470,10 @@ class ProducerTest extends JUnitSuite {
     val syncProducer2 = EasyMock.createMock(classOf[kafka.producer.SyncProducer])
     import scala.collection.JavaConversions._
     syncProducer1.send("test-topic1", 0, new ByteBufferMessageSet(compressionCodec = NoCompressionCodec,
-                                                                  messages = asList(Array(new Message("test1".getBytes)))))
+                                                                  messages = asJavaList(Array(new Message("test1".getBytes)))))
     EasyMock.expectLastCall
     syncProducer1.send("test-topic1", 0, new ByteBufferMessageSet(compressionCodec = NoCompressionCodec,
-                                                                  messages = asList(Array(new Message("test1".getBytes)))))
+                                                                  messages = asJavaList(Array(new Message("test1".getBytes)))))
     EasyMock.expectLastCall
     syncProducer1.close
     EasyMock.expectLastCall
@@ -488,17 +488,17 @@ class ProducerTest extends JUnitSuite {
     val producerPool = new ProducerPool(config, serializer, syncProducers, new ConcurrentHashMap[Int, AsyncProducer[String]]())
     val producer = new Producer[String, String](config, partitioner, producerPool, false)
 
-    producer.send(new ProducerData[String, String]("test-topic1", "test", asList(Array("test1"))))
+    producer.send(new ProducerData[String, String]("test-topic1", "test", asJavaList(Array("test1"))))
     Thread.sleep(100)
 
     // now send again to this topic using a real producer, this time all brokers would have registered
     // their partitions in zookeeper
     producer1.send("test-topic1", new ByteBufferMessageSet(compressionCodec = NoCompressionCodec,
-                                                           messages = asList(Array(new Message("test".getBytes())))))
+                                                           messages = asJavaList(Array(new Message("test".getBytes())))))
     Thread.sleep(100)
 
     // wait for zookeeper to register the new topic
-    producer.send(new ProducerData[String, String]("test-topic1", "test1", asList(Array("test1"))))
+    producer.send(new ProducerData[String, String]("test-topic1", "test1", asJavaList(Array("test1"))))
     Thread.sleep(100)
     producer.close
 
