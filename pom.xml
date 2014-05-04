@@ -5,7 +5,7 @@
     <artifactId>kafka-scala210</artifactId>
     <packaging>jar</packaging>
     <version>0.7.2</version>
-<!-- test -->
+
     <properties>
         <scala.major.version>2.10</scala.major.version>
         <scala.version>${scala.major.version}.3</scala.version>
@@ -15,29 +15,8 @@
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
-        <finalName>pt-scoring-server-web</finalName>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warName>scoringserver</warName>
-                    <packagingIncludes>
-                    </packagingIncludes>
-                    <webResources>
-                        <webResource>
-                            <!-- this is relative to the pom.xml directory -->
-                            <directory>target</directory>
-                            <targetPath>WEB-INF</targetPath>
-                            <!-- the list has a default value of ** -->
-                            <includes>
-                                <include>version.info</include>
-                            </includes>
-                        </webResource>
-                    </webResources>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
@@ -66,19 +45,9 @@
                 <configuration>
                     <useFile>true</useFile>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                    <systemProperties>
-                        <property>
-                            <name>scoringServerTestDir</name>
-                            <value>${project.build.testOutputDirectory}</value>
-                        </property>
-                    </systemProperties>
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.codehaus.gmaven</groupId>
-                <artifactId>gmaven-plugin</artifactId>
-            </plugin>
         </plugins>
     </build>
     <reporting>
