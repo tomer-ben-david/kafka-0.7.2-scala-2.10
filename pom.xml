@@ -5,7 +5,7 @@
     <artifactId>kafka-scala210</artifactId>
     <packaging>jar</packaging>
     <version>0.7.2</version>
-
+<!-- test -->
     <properties>
         <scala.major.version>2.10</scala.major.version>
         <scala.version>${scala.major.version}.3</scala.version>
