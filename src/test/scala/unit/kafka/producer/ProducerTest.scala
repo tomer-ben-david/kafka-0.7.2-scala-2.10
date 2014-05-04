@@ -401,39 +401,39 @@ class ProducerTest extends JUnitSuite {
     EasyMock.verify(asyncProducer1)
   }
 
-  @Test
-  def testZKSendToNewTopic() {
-    val props = new Properties()
-    props.put("serializer.class", "kafka.serializer.StringEncoder")
-    props.put("partitioner.class", "kafka.producer.StaticPartitioner")
-    props.put("zk.connect", TestZKUtils.zookeeperConnect)
-
-    val config = new ProducerConfig(props)
-    val serializer = new StringEncoder
-
-    val producer = new Producer[String, String](config)
-    try {
-      // Available broker id, partition id at this stage should be (0,0), (1,0)
-      // this should send the message to broker 0 on partition 0
-      producer.send(new ProducerData[String, String]("new-topic", "test", Array("test1")))
-      Thread.sleep(100)
-      // Available broker id, partition id at this stage should be (0,0), (0,1), (0,2), (0,3), (1,0)
-      // Since 4 % 5 = 4, this should send the message to broker 1 on partition 0
-      producer.send(new ProducerData[String, String]("new-topic", "test", Array("test1")))
-      Thread.sleep(100)
-      // cross check if brokers got the messages
-      val messageSet1 = consumer1.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
-      Assert.assertTrue("Message set should have 1 message", messageSet1.hasNext)
-      Assert.assertEquals(new Message("test1".getBytes), messageSet1.next.message)
-      val messageSet2 = consumer2.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
-      Assert.assertTrue("Message set should have 1 message", messageSet2.hasNext)
-      Assert.assertEquals(new Message("test1".getBytes), messageSet2.next.message)
-    } catch {
-      case e: Exception => fail("Not expected", e)
-    }finally {
-      producer.close
-    }
-  }
+//  @Test
+//  def testZKSendToNewTopic() {
+//    val props = new Properties()
+//    props.put("serializer.class", "kafka.serializer.StringEncoder")
+//    props.put("partitioner.class", "kafka.producer.StaticPartitioner")
+//    props.put("zk.connect", TestZKUtils.zookeeperConnect)
+//
+//    val config = new ProducerConfig(props)
+//    val serializer = new StringEncoder
+//
+//    val producer = new Producer[String, String](config)
+//    try {
+//      // Available broker id, partition id at this stage should be (0,0), (1,0)
+//      // this should send the message to broker 0 on partition 0
+//      producer.send(new ProducerData[String, String]("new-topic", "test", Array("test1")))
+//      Thread.sleep(100)
+//      // Available broker id, partition id at this stage should be (0,0), (0,1), (0,2), (0,3), (1,0)
+//      // Since 4 % 5 = 4, this should send the message to broker 1 on partition 0
+//      producer.send(new ProducerData[String, String]("new-topic", "test", Array("test1")))
+//      Thread.sleep(100)
+//      // cross check if brokers got the messages
+//      val messageSet1 = consumer1.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
+//      Assert.assertTrue("Message set should have 1 message", messageSet1.hasNext)
+//      Assert.assertEquals(new Message("test1".getBytes), messageSet1.next.message)
+//      val messageSet2 = consumer2.fetch(new FetchRequest("new-topic", 0, 0, 10000)).iterator
+//      Assert.assertTrue("Message set should have 1 message", messageSet2.hasNext)
+//      Assert.assertEquals(new Message("test1".getBytes), messageSet2.next.message)
+//    } catch {
+//      case e: Exception => fail("Not expected", e)
+//    }finally {
+//      producer.close
+//    }
+//  }
 
   @Test
   def testZKSendWithDeadBroker() {

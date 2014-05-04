@@ -306,36 +306,36 @@ class PrimitiveApiTest extends JUnit3Suite with ProducerConsumerTestHarness with
     }
   }
 
-  def testProduceAndMultiFetchJavaWithCompression() {
-    // send some messages
-    val topics = List("test1", "test2", "test3");
-    {
-      val messages = new mutable.HashMap[String, ByteBufferMessageSet]
-      val fetches : java.util.ArrayList[FetchRequest] = new java.util.ArrayList[FetchRequest]
-      for(topic <- topics) {
-        val set = new ByteBufferMessageSet(compressionCodec = DefaultCompressionCodec,
-                                           messages = getMessageList(new Message(("a_" + topic).getBytes),
-                                                                     new Message(("b_" + topic).getBytes)))
-        messages += topic -> set
-        producer.send(topic, set)
-        set.getBuffer.rewind
-        fetches.add(new FetchRequest(topic, 0, 0, 10000))
-      }
-
-      // wait a bit for produced message to be available
-      Thread.sleep(200)
-      val response = consumer.multifetch(fetches)
-      val iter = response.iterator
-      for(topic <- topics) {
-        if (iter.hasNext) {
-          val resp = iter.next
-          TestUtils.checkEquals(messages(topic).iterator, resp.iterator)
-        }
-        else
-          fail("fewer responses than expected")
-      }
-    }
-  }
+//  def testProduceAndMultiFetchJavaWithCompression() {
+//    // send some messages
+//    val topics = List("test1", "test2", "test3");
+//    {
+//      val messages = new mutable.HashMap[String, ByteBufferMessageSet]
+//      val fetches : java.util.ArrayList[FetchRequest] = new java.util.ArrayList[FetchRequest]
+//      for(topic <- topics) {
+//        val set = new ByteBufferMessageSet(compressionCodec = DefaultCompressionCodec,
+//                                           messages = getMessageList(new Message(("a_" + topic).getBytes),
+//                                                                     new Message(("b_" + topic).getBytes)))
+//        messages += topic -> set
+//        producer.send(topic, set)
+//        set.getBuffer.rewind
+//        fetches.add(new FetchRequest(topic, 0, 0, 10000))
+//      }
+//
+//      // wait a bit for produced message to be available
+//      Thread.sleep(200)
+//      val response = consumer.multifetch(fetches)
+//      val iter = response.iterator
+//      for(topic <- topics) {
+//        if (iter.hasNext) {
+//          val resp = iter.next
+//          TestUtils.checkEquals(messages(topic).iterator, resp.iterator)
+//        }
+//        else
+//          fail("fewer responses than expected")
+//      }
+//    }
+//  }
 
   def testMultiProduce() {
     // send some messages

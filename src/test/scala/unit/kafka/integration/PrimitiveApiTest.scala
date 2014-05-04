@@ -148,68 +148,68 @@ class PrimitiveApiTest extends JUnit3Suite with ProducerConsumerTestHarness with
     requestHandlerLogger.setLevel(Level.ERROR)
   }
 
-  def testProduceAndMultiFetchWithCompression() {
-    // send some messages
-    val topics = List("test1", "test2", "test3");
-    {
-      val messages = new mutable.HashMap[String, ByteBufferMessageSet]
-      val fetches = new mutable.ArrayBuffer[FetchRequest]
-      for(topic <- topics) {
-        val set = new ByteBufferMessageSet(DefaultCompressionCodec,
-                                           new Message(("a_" + topic).getBytes), new Message(("b_" + topic).getBytes))
-        messages += topic -> set
-        producer.send(topic, set)
-        set.getBuffer.rewind
-        fetches += new FetchRequest(topic, 0, 0, 10000)
-      }
-
-      // wait a bit for produced message to be available
-      Thread.sleep(200)
-      val response = consumer.multifetch(fetches: _*)
-      for((topic, resp) <- topics.zip(response.toList))
-        TestUtils.checkEquals(messages(topic).iterator, resp.iterator)
-    }
-
-    // temporarily set request handler logger to a higher level
-    requestHandlerLogger.setLevel(Level.FATAL)
-
-    {
-      // send some invalid offsets
-      val fetches = new mutable.ArrayBuffer[FetchRequest]
-      for(topic <- topics)
-        fetches += new FetchRequest(topic, 0, -1, 10000)
-
-      try {
-        val responses = consumer.multifetch(fetches: _*)
-        for(resp <- responses)
-          resp.iterator
-        fail("expect exception")
-      }
-      catch {
-        case e: OffsetOutOfRangeException => "this is good"
-      }
-    }
-
-    {
-      // send some invalid partitions
-      val fetches = new mutable.ArrayBuffer[FetchRequest]
-      for(topic <- topics)
-        fetches += new FetchRequest(topic, -1, 0, 10000)
-
-      try {
-        val responses = consumer.multifetch(fetches: _*)
-        for(resp <- responses)
-          resp.iterator
-        fail("expect exception")
-      }
-      catch {
-        case e: InvalidPartitionException => "this is good"
-      }
-    }
-
-    // restore set request handler logger to a higher level
-    requestHandlerLogger.setLevel(Level.ERROR)
-  }
+//  def testProduceAndMultiFetchWithCompression() {
+//    // send some messages
+//    val topics = List("test1", "test2", "test3");
+//    {
+//      val messages = new mutable.HashMap[String, ByteBufferMessageSet]
+//      val fetches = new mutable.ArrayBuffer[FetchRequest]
+//      for(topic <- topics) {
+//        val set = new ByteBufferMessageSet(DefaultCompressionCodec,
+//                                           new Message(("a_" + topic).getBytes), new Message(("b_" + topic).getBytes))
+//        messages += topic -> set
+//        producer.send(topic, set)
+//        set.getBuffer.rewind
+//        fetches += new FetchRequest(topic, 0, 0, 10000)
+//      }
+//
+//      // wait a bit for produced message to be available
+//      Thread.sleep(200)
+//      val response = consumer.multifetch(fetches: _*)
+//      for((topic, resp) <- topics.zip(response.toList))
+//        TestUtils.checkEquals(messages(topic).iterator, resp.iterator)
+//    }
+//
+//    // temporarily set request handler logger to a higher level
+//    requestHandlerLogger.setLevel(Level.FATAL)
+//
+//    {
+//      // send some invalid offsets
+//      val fetches = new mutable.ArrayBuffer[FetchRequest]
+//      for(topic <- topics)
+//        fetches += new FetchRequest(topic, 0, -1, 10000)
+//
+//      try {
+//        val responses = consumer.multifetch(fetches: _*)
+//        for(resp <- responses)
+//          resp.iterator
+//        fail("expect exception")
+//      }
+//      catch {
+//        case e: OffsetOutOfRangeException => "this is good"
+//      }
+//    }
+//
+//    {
+//      // send some invalid partitions
+//      val fetches = new mutable.ArrayBuffer[FetchRequest]
+//      for(topic <- topics)
+//        fetches += new FetchRequest(topic, -1, 0, 10000)
+//
+//      try {
+//        val responses = consumer.multifetch(fetches: _*)
+//        for(resp <- responses)
+//          resp.iterator
+//        fail("expect exception")
+//      }
+//      catch {
+//        case e: InvalidPartitionException => "this is good"
+//      }
+//    }
+//
+//    // restore set request handler logger to a higher level
+//    requestHandlerLogger.setLevel(Level.ERROR)
+//  }
 
   def testMultiProduce() {
     // send some messages
